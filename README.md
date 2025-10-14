@@ -253,13 +253,6 @@ guard.can(scopes, "user:read"); // ✅ Autocomplete works!
 guard.can(scopes, "user:write"); // ✅ Also autocompletes
 ```
 
-## Documentation
-
-- 📘 [Type-Safe Usage Guide](./TYPE_SAFE_USAGE.md) - Complete guide to type-safe permissions
-- 📖 [Examples](./EXAMPLES.md) - Comprehensive usage examples
-- 🚀 [Quick Start](./QUICKSTART.md) - Get started quickly
-- 🏗️ [Project Structure](./PROJECT_STRUCTURE.md) - Repository structure
-
 ## Development
 
 This monorepo uses pnpm workspaces.
