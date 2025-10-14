@@ -1,7 +1,7 @@
 export {
   createGuard,
-  PermissionDeniedError,
-  type ExpressGuardOptions,
   type ExpressGuard,
+  type ExpressGuardOptions,
+  PermissionDeniedError,
   type RequestHandlerWithUnless,
 } from "./express";

@@ -94,8 +94,10 @@ export function createGuardReact<T extends string>(guardInstance: Guard<T>) {
     function PermissionProvider({ scopes, guard, children }: PermissionProviderProps<T>) {
         return (
             <PermissionContext.Provider value= {{ scopes, guard }
-    }> { children } </PermissionContext.Provider>
-    );
+    }>
+        { children }
+        </PermissionContext.Provider>
+        );
 }
 
 /**

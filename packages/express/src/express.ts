@@ -138,7 +138,7 @@ function extractPermissions(
  */
 export function createGuard<T extends string>(
   guardInstance: Guard<T>,
-  options?: ExpressGuardOptions
+  options?: ExpressGuardOptions,
 ): ExpressGuard<T> {
   const requestProperty = options?.requestProperty || "user";
   const permissionsProperty = options?.permissionsProperty || "permissions";

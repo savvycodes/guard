@@ -1,6 +1,6 @@
+import { createGuard, definePermissions } from "@savvycodes/guard-core";
 import type { Request, Response } from "express";
 import { describe, expect, it, vi } from "vitest";
-import { createGuard, definePermissions } from "@savvycodes/guard-core";
 import { createGuard as createExpressGuard, PermissionDeniedError } from "./express";
 
 describe("Express middleware - basic API", () => {
@@ -17,7 +17,7 @@ describe("Express middleware - basic API", () => {
   };
 
   // Create a generic permission list for testing
-  const testPerms = definePermissions(['read:posts', 'write:posts', 'admin']);
+  const testPerms = definePermissions(["read:posts", "write:posts", "admin"]);
 
   describe("basic permission checking", () => {
     it("should call next when user has required permission", () => {
@@ -98,10 +98,7 @@ describe("Express middleware - basic API", () => {
 
       const guard = createGuard(testPerms);
       const guardInstance = createExpressGuard(guard);
-      const middleware = guardInstance.check([
-        ["admin"],
-        ["read:posts", "write:posts"],
-      ]);
+      const middleware = guardInstance.check([["admin"], ["read:posts", "write:posts"]]);
       middleware(req, res, next);
 
       expect(next).toHaveBeenCalledWith();
@@ -158,7 +155,7 @@ describe("Express middleware - basic API", () => {
       const res = mockResponse();
       const next = vi.fn();
 
-      const testOAuthPerms = definePermissions(['status', 'user:read', 'user:write']);
+      const testOAuthPerms = definePermissions(["status", "user:read", "user:write"]);
       const guard = createGuard(testOAuthPerms);
       const guardInstance = createExpressGuard(guard, { permissionsProperty: "scope" });
       const middleware = guardInstance.check("user:read");
@@ -172,7 +169,7 @@ describe("Express middleware - basic API", () => {
       const res = mockResponse();
       const next = vi.fn();
 
-      const testOAuthPerms = definePermissions(['user:read']);
+      const testOAuthPerms = definePermissions(["user:read"]);
       const guard = createGuard(testOAuthPerms);
       const guardInstance = createExpressGuard(guard, { permissionsProperty: "scope" });
       const middleware = guardInstance.check("user:read");
@@ -187,7 +184,7 @@ describe("Express middleware - basic API", () => {
       const res = mockResponse();
       const next = vi.fn();
 
-      const testOAuthPerms = definePermissions(['status', 'user:read']);
+      const testOAuthPerms = definePermissions(["status", "user:read"]);
       const guard = createGuard(testOAuthPerms);
       const guardInstance = createExpressGuard(guard, { permissionsProperty: "scope" });
       const middleware = guardInstance.check("user:read");
@@ -255,8 +252,8 @@ describe("Express middleware - with definePermissions", () => {
     return res;
   };
 
-  const adminPerms = definePermissions(['admin', 'user:read', 'user:write', 'posts:write']);
-  const userPerms = definePermissions(['user:read', 'posts:read']);
+  const adminPerms = definePermissions(["admin", "user:read", "user:write", "posts:write"]);
+  const userPerms = definePermissions(["user:read", "posts:read"]);
 
   describe("type-safe permission checking", () => {
     it("should provide autocomplete for defined permissions", () => {
@@ -491,7 +488,7 @@ describe("Express middleware - with definePermissions", () => {
       const req = {
         url: "/public",
         originalUrl: "/public",
-        user: { permissions: ["user:read"] }
+        user: { permissions: ["user:read"] },
       } as any;
       const res = mockResponse();
       const next = vi.fn();

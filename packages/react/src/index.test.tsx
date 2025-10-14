@@ -18,8 +18,7 @@ const guard = createGuard(admin, user);
 
 // Create typed React utilities from the guard
 // Now all hooks and components have full type safety!
-const { PermissionProvider, useGuard, Guard, withPermission } =
-  createGuardReact(guard);
+const { PermissionProvider, useGuard, Guard, withPermission } = createGuardReact(guard);
 
 // ============================================================================
 // Tests - Now with full type safety!
@@ -38,7 +37,7 @@ describe("PermissionProvider", () => {
     render(
       <PermissionProvider scopes={["read:posts"]} guard={guard}>
         <TestComponent />
-      </PermissionProvider>
+      </PermissionProvider>,
     );
 
     expect(screen.getByText("Has permission")).toBeDefined();
@@ -52,7 +51,7 @@ describe("Guard component", () => {
         <Guard check="read:posts">
           <div>Content</div>
         </Guard>
-      </PermissionProvider>
+      </PermissionProvider>,
     );
 
     expect(screen.getByText("Content")).toBeDefined();
@@ -64,7 +63,7 @@ describe("Guard component", () => {
         <Guard check="write:posts">
           <div>Content</div>
         </Guard>
-      </PermissionProvider>
+      </PermissionProvider>,
     );
 
     expect(screen.queryByText("Content")).toBeNull();
@@ -74,11 +73,9 @@ describe("Guard component", () => {
     render(
       <PermissionProvider scopes={["read:posts"]} guard={guard}>
         <Guard check="write:posts">
-          {(hasPermission) =>
-            hasPermission ? <div>Can write</div> : <div>Cannot write</div>
-          }
+          {(hasPermission) => (hasPermission ? <div>Can write</div> : <div>Cannot write</div>)}
         </Guard>
-      </PermissionProvider>
+      </PermissionProvider>,
     );
 
     expect(screen.getByText("Cannot write")).toBeDefined();
@@ -88,7 +85,7 @@ describe("Guard component", () => {
     render(
       <PermissionProvider scopes={["read:posts"]} guard={guard}>
         <Guard check="read:posts" render={<div>Rendered content</div>} />
-      </PermissionProvider>
+      </PermissionProvider>,
     );
 
     expect(screen.getByText("Rendered content")).toBeDefined();
@@ -98,11 +95,9 @@ describe("Guard component", () => {
     render(
       <PermissionProvider scopes={["admin"]} guard={guard}>
         <Guard check="admin">
-          {(hasPermission) =>
-            hasPermission ? <div>Is admin</div> : <div>Not admin</div>
-          }
+          {(hasPermission) => (hasPermission ? <div>Is admin</div> : <div>Not admin</div>)}
         </Guard>
-      </PermissionProvider>
+      </PermissionProvider>,
     );
 
     expect(screen.getByText("Is admin")).toBeDefined();
@@ -114,7 +109,7 @@ describe("Guard component", () => {
         <Guard check="read:posts" render={<div>From render</div>}>
           <div>From children</div>
         </Guard>
-      </PermissionProvider>
+      </PermissionProvider>,
     );
 
     expect(screen.getByText("From render")).toBeDefined();
@@ -131,7 +126,7 @@ describe("withPermission HOC", () => {
     render(
       <PermissionProvider scopes={["read:posts"]} guard={guard}>
         <WrappedComponent />
-      </PermissionProvider>
+      </PermissionProvider>,
     );
 
     expect(screen.getByText("Has permission")).toBeDefined();
@@ -145,7 +140,7 @@ describe("withPermission HOC", () => {
     render(
       <PermissionProvider scopes={["read:posts"]} guard={guard}>
         <WrappedComponent />
-      </PermissionProvider>
+      </PermissionProvider>,
     );
 
     expect(screen.queryByText("Content")).toBeNull();
@@ -170,7 +165,7 @@ describe("withPermission HOC", () => {
     render(
       <PermissionProvider scopes={["admin"]} guard={guard}>
         <WrappedComponent userId="123" name="John" />
-      </PermissionProvider>
+      </PermissionProvider>,
     );
 
     expect(screen.getByText("User 123 - John")).toBeDefined();
@@ -187,14 +182,12 @@ describe("withPermission HOC", () => {
   });
 
   it("should work with inline arrow functions", () => {
-    const CanWrite = withPermission("write:posts")(() => (
-      <div>I can write</div>
-    ));
+    const CanWrite = withPermission("write:posts")(() => <div>I can write</div>);
 
     render(
       <PermissionProvider scopes={["write:posts"]} guard={guard}>
         <CanWrite />
-      </PermissionProvider>
+      </PermissionProvider>,
     );
 
     expect(screen.getByText("I can write")).toBeDefined();
@@ -208,7 +201,7 @@ describe("withPermission HOC", () => {
     render(
       <PermissionProvider scopes={["admin"]} guard={guard}>
         <CanWriteOrAdmin />
-      </PermissionProvider>
+      </PermissionProvider>,
     );
 
     expect(screen.getByText("I can write or am an admin")).toBeDefined();

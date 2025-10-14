@@ -21,13 +21,13 @@ export type InferPermission<T> = T extends PermissionList<infer P> ? P : never;
  * Guard instance with bound permission checking functions
  */
 export interface Guard<T extends string> {
-    can: (scopes: string[], requiredScopes: T | T[] | T[][]) => boolean;
-    cannot: (scopes: string[], requiredScopes: T | T[] | T[][]) => boolean;
-    /**
-     * Get all unique permissions known to this guard
-     * @returns Array of all unique permissions (no duplicates)
-     */
-    permissions: () => T[];
+  can: (scopes: string[], requiredScopes: T | T[] | T[][]) => boolean;
+  cannot: (scopes: string[], requiredScopes: T | T[] | T[][]) => boolean;
+  /**
+   * Get all unique permissions known to this guard
+   * @returns Array of all unique permissions (no duplicates)
+   */
+  permissions: () => T[];
 }
 
 /**
@@ -48,20 +48,18 @@ export interface Guard<T extends string> {
  * ```
  */
 export function definePermissions<const T extends readonly string[]>(
-    permissions: T,
+  permissions: T,
 ): PermissionList<T[number]>;
-export function definePermissions<const T extends string>(
-    ...permissions: T[]
-): PermissionList<T>;
+export function definePermissions<const T extends string>(...permissions: T[]): PermissionList<T>;
 export function definePermissions<const T extends readonly string[] | string>(
-    ...args: T extends readonly string[] ? [T] : T[]
+  ...args: T extends readonly string[] ? [T] : T[]
 ): PermissionList<T extends readonly string[] ? T[number] : T extends string ? T : never> {
-    // If first argument is an array, use it directly
-    if (args.length === 1 && Array.isArray(args[0])) {
-        return args[0] as any;
-    }
-    // Otherwise, treat all arguments as individual permissions
-    return args as any;
+  // If first argument is an array, use it directly
+  if (args.length === 1 && Array.isArray(args[0])) {
+    return args[0] as any;
+  }
+  // Otherwise, treat all arguments as individual permissions
+  return args as any;
 }
 
 /**
@@ -93,18 +91,18 @@ export const defineRole = definePermissions;
  * ```
  */
 export function createGuard<const T extends readonly PermissionList<string>[]>(
-    ...permissionLists: T
+  ...permissionLists: T
 ): Guard<InferPermission<T[number]>> {
-    type P = InferPermission<T[number]>;
+  type P = InferPermission<T[number]>;
 
-    // Flatten and deduplicate permissions
-    const allPermissions = [...new Set(permissionLists.flat())] as P[];
+  // Flatten and deduplicate permissions
+  const allPermissions = [...new Set(permissionLists.flat())] as P[];
 
-    return {
-        can: (scopes: string[], requiredScopes: P | P[] | P[][]) => can(scopes, requiredScopes),
-        cannot: (scopes: string[], requiredScopes: P | P[] | P[][]) => cannot(scopes, requiredScopes),
-        permissions: () => allPermissions,
-    };
+  return {
+    can: (scopes: string[], requiredScopes: P | P[] | P[][]) => can(scopes, requiredScopes),
+    cannot: (scopes: string[], requiredScopes: P | P[] | P[][]) => cannot(scopes, requiredScopes),
+    permissions: () => allPermissions,
+  };
 }
 
 /**
@@ -129,30 +127,30 @@ export function createGuard<const T extends readonly PermissionList<string>[]>(
  * @returns
  */
 export function can<T extends string = Permission>(
-    scopes: string[],
-    requiredScopes: T | T[] | T[][],
+  scopes: string[],
+  requiredScopes: T | T[] | T[][],
 ): boolean {
-    if (!requiredScopes || !scopes) return false;
+  if (!requiredScopes || !scopes) return false;
 
-    const required = isString(requiredScopes)
-        ? ([[requiredScopes]] as T[][])
-        : isArray(requiredScopes) && every(requiredScopes, isString)
-            ? ([requiredScopes] as T[][])
-            : (requiredScopes as T[][]);
+  const required = isString(requiredScopes)
+    ? ([[requiredScopes]] as T[][])
+    : isArray(requiredScopes) && every(requiredScopes, isString)
+      ? ([requiredScopes] as T[][])
+      : (requiredScopes as T[][]);
 
-    // Check if scopes have sufficient permissions
-    const sufficient = required.some((scope) => {
-        return every(scope, (permission: T) => {
-            return scopes.indexOf(permission) !== -1;
-        });
+  // Check if scopes have sufficient permissions
+  const sufficient = required.some((scope) => {
+    return every(scope, (permission: T) => {
+      return scopes.indexOf(permission) !== -1;
     });
+  });
 
-    return sufficient;
+  return sufficient;
 }
 
 export function cannot<T extends string = Permission>(
-    scopes: string[],
-    requiredScopes: T | T[] | T[][],
+  scopes: string[],
+  requiredScopes: T | T[] | T[][],
 ): boolean {
-    return !can(scopes, requiredScopes);
+  return !can(scopes, requiredScopes);
 }
