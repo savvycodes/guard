@@ -86,22 +86,14 @@ export interface GuardProps<T extends string> {
  * ```
  */
 export function createGuard<T extends string>(_guardInstance: Guard<T>) {
-  const PermissionContext = createContext<
-    PermissionContextValue<T> | undefined
-  >(undefined);
+  const PermissionContext = createContext<PermissionContextValue<T> | undefined>(undefined);
 
   /**
    * Permission provider component
    */
-  function PermissionProvider({
-    scopes,
-    guard,
-    children,
-  }: PermissionProviderProps<T>) {
+  function PermissionProvider({ scopes, guard, children }: PermissionProviderProps<T>) {
     return (
-      <PermissionContext.Provider value={{ scopes, guard }}>
-        {children}
-      </PermissionContext.Provider>
+      <PermissionContext.Provider value={{ scopes, guard }}>{children}</PermissionContext.Provider>
     );
   }
 
@@ -113,9 +105,7 @@ export function createGuard<T extends string>(_guardInstance: Guard<T>) {
   function usePermissionContext(): PermissionContextValue<T> {
     const context = useContext(PermissionContext);
     if (context === undefined) {
-      throw new Error(
-        "usePermissionContext must be used within a PermissionProvider"
-      );
+      throw new Error("usePermissionContext must be used within a PermissionProvider");
     }
     return context;
   }
@@ -165,9 +155,7 @@ export function createGuard<T extends string>(_guardInstance: Guard<T>) {
    * @returns A function that accepts a component and returns it wrapped with permission checking
    */
   function withPermission(requiredPermissions: T | T[] | T[][]) {
-    return <P extends object>(
-      Component: React.ComponentType<P>
-    ): React.FC<P> => {
+    return <P extends object>(Component: React.ComponentType<P>): React.FC<P> => {
       const WrappedComponent: React.FC<P> = (props) => {
         const hasPermission = useGuard(requiredPermissions);
 
