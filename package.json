@@ -1,0 +1,26 @@
+{
+  "name": "@savvycodes/guard",
+  "version": "0.0.1",
+  "description": "Permission utilities",
+  "private": true,
+  "scripts": {
+    "test": "pnpm -r test",
+    "build": "pnpm check:strict && pnpm -r --filter='!./examples/**' build",
+    "dev": "pnpm -r dev",
+    "typecheck": "pnpm -r typecheck",
+    "check": "biome check .",
+    "check:strict": "biome check --error-on-warnings packages",
+    "format": "biome format --write .",
+    "lint": "biome lint .",
+    "fix": "biome check --write ."
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.2.5",
+    "@types/node": "^20.10.0",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.0.4"
+  },
+  "author": "Daan Rosbergen",
+  "license": "ISC"
+}
