@@ -4,12 +4,12 @@ A TypeScript permission utility library with **full type safety** and support fo
 
 ## Features
 
-✨ **Type-Safe Permission Definitions** - Define permissions with automatic type inference
-🎯 **Flexible Permission Logic** - Single permissions, AND logic, OR logic  
-⚛️ **React Integration** - Provider, hooks, Guard component with render props, and HOC  
-🌐 **HTTP Middleware** - Express middleware for route protection  
-📦 **Zero Config** - Works out of the box with sensible defaults  
-🔒 **Secure by Default** - Permission checks are fail-safe (deny by default)
+- **Type-Safe Permission Definitions** - Define permissions with automatic type inference
+- **Flexible Permission Logic** - Single permissions, AND logic, OR logic
+- **React Integration** - Provider, hooks, Guard component with render props, and HOC
+- **HTTP Middleware** - Express middleware for route protection
+- **Zero Config** - Works out of the box with sensible defaults
+- **Secure by Default** - Permission checks are fail-safe (deny by default)
 
 ## Quick Start
 
