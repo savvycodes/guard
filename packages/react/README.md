@@ -21,6 +21,8 @@ pnpm add @savvycodes/guard-react @savvycodes/guard-core
 yarn add @savvycodes/guard-react @savvycodes/guard-core
 ```
 
+Supports React 18 and 19.
+
 ## Quick Start
 
 ### 1. Define Your Permissions and Create Typed Utilities

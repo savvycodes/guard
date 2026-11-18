@@ -1,5 +1,12 @@
-import { describe, expect, it } from "vitest";
-import { can, cannot, createGuard, definePermissions } from "./index";
+import { describe, expect, expectTypeOf, it } from "vitest";
+import {
+  can,
+  cannot,
+  createGuard,
+  definePermissions,
+  defineRole,
+  type InferPermission,
+} from "./index";
 
 describe("can", () => {
   it("should return true when user has the required permission (string)", () => {
@@ -204,5 +211,40 @@ describe("definePermissions and createGuard", () => {
     const guard = createGuard(empty);
 
     expect(guard.permissions()).toEqual([]);
+  });
+});
+
+describe("role composition", () => {
+  const user = defineRole(["user:me"]);
+  const admin = defineRole([...user, "user:write"]);
+  const superuser = defineRole([...admin, "admin:write"]);
+
+  it("should include the spread role's permissions", () => {
+    expect(admin).toEqual(["user:me", "user:write"]);
+    expect(superuser).toEqual(["user:me", "user:write", "admin:write"]);
+    expect(user).toEqual(["user:me"]);
+  });
+
+  it("should infer the union of composed permissions", () => {
+    expectTypeOf<InferPermission<typeof admin>>().toEqualTypeOf<"user:me" | "user:write">();
+    expectTypeOf<InferPermission<typeof superuser>>().toEqualTypeOf<
+      "user:me" | "user:write" | "admin:write"
+    >();
+  });
+
+  it("should grant inherited permissions through the guard", () => {
+    const guard = createGuard(user, admin, superuser);
+
+    expect(guard.can([...admin], "user:me")).toBe(true);
+    expect(guard.can([...admin], ["user:me", "user:write"])).toBe(true);
+    expect(guard.cannot([...user], "user:write")).toBe(true);
+    expect(guard.permissions()).toEqual(["user:me", "user:write", "admin:write"]);
+  });
+});
+
+describe("can with malformed input", () => {
+  it("should deny instead of throwing on non-array groups", () => {
+    expect(can(["a"], [["a"], 1 as any])).toBe(true);
+    expect(can(["a"], [1, 2] as any)).toBe(false);
   });
 });
