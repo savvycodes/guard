@@ -26,6 +26,10 @@ jobs:
                   node-version: "22"
                   registry-url: "https://registry.npmjs.org"
 
+            # Trusted publishing (OIDC) needs npm >= 11.5.1; Node 22 ships npm 10.
+            - name: Update npm
+              run: npm install -g npm@latest
+
             - name: Setup pnpm
               uses: pnpm/action-setup@v3
               with:
@@ -63,5 +67,5 @@ jobs:
                   commit: "chore: version packages"
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-                  NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-                  NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+                  # No NPM_TOKEN: npm authenticates with trusted publishing (OIDC).
+                  # A token in the environment would take precedence over OIDC.
