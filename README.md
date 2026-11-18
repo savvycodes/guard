@@ -232,6 +232,31 @@ app.get("/upgrade", cannot("premium"), (req, res) => {
 });
 ```
 
+### [@savvycodes/guard-effect](./packages/effect)
+
+Permission checks for [Effect](https://effect.website) v4, with a typed `PermissionDenied` error and an `effect/http-api` middleware. ESM-only.
+
+```typescript
+import { createGuard, defineRole } from "@savvycodes/guard-core";
+import { createGuard as createEffectGuard, Scopes } from "@savvycodes/guard-effect";
+import { Effect } from "effect";
+
+const user = defineRole(["posts:read"]);
+const admin = defineRole([...user, "posts:write"]);
+
+const authz = createEffectGuard(createGuard(user, admin));
+
+// Effect<void, PermissionDenied, Scopes>
+const publish = Effect.gen(function* () {
+  yield* authz.require("posts:write");
+  // ...
+});
+
+publish.pipe(Effect.provideService(Scopes, session.permissions));
+```
+
+See the [package README](./packages/effect/README.md) for the HttpApi `Authorization` middleware.
+
 ## Composing Roles
 
 Roles are plain readonly arrays, so a role can include another role's permissions by spreading it. The inferred permission type follows along:
