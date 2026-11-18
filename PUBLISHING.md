@@ -2,18 +2,17 @@
 
 ## Setup
 
-### 1. Configure NPM Token
+Packages are published from `.github/workflows/publish.yml` with [npm trusted publishing](https://docs.npmjs.com/trusted-publishers/) (OIDC). No npm token is stored in GitHub; provenance is generated automatically.
 
-1. Create an NPM access token at https://www.npmjs.com
+Each package needs a trusted publisher on npmjs.com. Run once per package as a maintainer (requires 2FA):
 
-   - Click your profile → Access Tokens → Generate New Token
-   - Select "Automation" type
-   - Copy the token
+```bash
+for pkg in core react express; do
+  npm trust github @savvycodes/guard-$pkg --repository savvycodes/guard --file publish.yml --allow-publish --yes
+done
+```
 
-2. Add to GitHub repository:
-   - Go to Settings → Secrets and variables → Actions
-   - Create new secret: `NPM_TOKEN`
-   - Paste your token
+A new package must be published once by hand before a trusted publisher can be added to it.
 
 ## Workflow
 
