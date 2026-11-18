@@ -49,3 +49,10 @@ jobs:
 
             - name: Run tests
               run: pnpm test
+
+            # guard-react supports React 18 and 19; the workspace develops against 19.
+            - name: Run React 18 tests
+              run: |
+                  pnpm --filter @savvycodes/guard-react add -D react@^18 react-dom@^18 @types/react@^18 @types/react-dom@^18
+                  pnpm --filter @savvycodes/guard-react typecheck
+                  pnpm --filter @savvycodes/guard-react test

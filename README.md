@@ -23,8 +23,9 @@ import {
 } from "@savvycodes/guard-core";
 
 // Define your roles with permissions
-const admin = defineRole(["admin:write", "admin:read", "user:read"]);
 const user = defineRole(["user:read"]);
+// Spread a role to build on it instead of repeating its permissions
+const admin = defineRole([...user, "admin:write", "admin:read"]);
 
 // Create a guard with full type safety
 const guard = createGuard(admin, user);
@@ -229,6 +230,21 @@ app.get("/posts", can("posts:write"), (req, res) => {
 app.get("/upgrade", cannot("premium"), (req, res) => {
   res.json({ message: "Upgrade to premium!" });
 });
+```
+
+## Composing Roles
+
+Roles are plain readonly arrays, so a role can include another role's permissions by spreading it. The inferred permission type follows along:
+
+```typescript
+const user = defineRole(["user:me"]);
+const admin = defineRole([...user, "user:write"]);
+const superuser = defineRole([...admin, "admin:write"]);
+
+type AdminPermission = InferPermission<typeof admin>;
+// AdminPermission = 'user:me' | 'user:write'
+
+guard.can([...admin], "user:me"); // true
 ```
 
 ## Type Safety

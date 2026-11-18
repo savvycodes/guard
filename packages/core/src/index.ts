@@ -1,7 +1,3 @@
-import every from "lodash/every";
-import isArray from "lodash/isArray";
-import isString from "lodash/isString";
-
 /**
  * Base permission type - string by default
  */
@@ -45,6 +41,10 @@ export interface Guard<T extends string> {
  * const user = definePermissions('user:read');
  *
  * // superuser is readonly ['superuser', 'user:write', ...] with full type info
+ *
+ * // Compose roles by spreading another role's permissions
+ * const member = definePermissions(['user:me']);
+ * const owner = definePermissions([...member, 'user:write']); // 'user:me' | 'user:write'
  * ```
  */
 export function definePermissions<const T extends readonly string[]>(
@@ -70,6 +70,9 @@ export function definePermissions<const T extends readonly string[] | string>(
  * const superuser = defineRole(['superuser', 'user:write', 'user:read', 'admin:read', 'admin:write']);
  * const admin = defineRole(['admin:write', 'admin:read', 'user:read']);
  * const user = defineRole(['user:read']);
+ *
+ * // Build on a lower role instead of repeating its permissions
+ * const editor = defineRole([...user, 'post:write']);
  * ```
  */
 export const defineRole = definePermissions;
@@ -134,18 +137,14 @@ export function can<T extends string = Permission>(
 
   const required = isString(requiredScopes)
     ? ([[requiredScopes]] as T[][])
-    : isArray(requiredScopes) && every(requiredScopes, isString)
+    : Array.isArray(requiredScopes) && requiredScopes.every(isString)
       ? ([requiredScopes] as T[][])
       : (requiredScopes as T[][]);
 
-  // Check if scopes have sufficient permissions
-  const sufficient = required.some((scope) => {
-    return every(scope, (permission: T) => {
-      return scopes.indexOf(permission) !== -1;
-    });
-  });
-
-  return sufficient;
+  // Sufficient when every permission of any group is in scope; malformed groups never grant access.
+  return required.some(
+    (scope) => Array.isArray(scope) && scope.every((permission) => scopes.includes(permission)),
+  );
 }
 
 export function cannot<T extends string = Permission>(
@@ -153,4 +152,8 @@ export function cannot<T extends string = Permission>(
   requiredScopes: T | T[] | T[][],
 ): boolean {
   return !can(scopes, requiredScopes);
+}
+
+function isString(value: unknown): value is string {
+  return typeof value === "string";
 }
